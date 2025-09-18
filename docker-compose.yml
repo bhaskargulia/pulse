@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: coastal_postgis
+    restart: always
+    environment:
+      POSTGRES_USER: coastal
+      POSTGRES_PASSWORD: coastalpass
+      POSTGRES_DB: coastal_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: coastal_backend
+    restart: always
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
